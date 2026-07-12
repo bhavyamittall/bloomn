@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bloom — Building an open language for interface motion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fg: #171717;
+    --muted: #6b6b6b;
+    --muted2: #9a9a9a;
+    --border: #e4e2de;
+    --placeholder-bg: #d9d9d9;
+    --placeholder-line: #c7c7c7;
+    --radius: 4px;
+    --sans: "Noto Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --serif: "Noto Serif", Georgia, "Times New Roman", serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #fff;
+    font-family: var(--sans);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .page {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  /* ── Left: copy panel ── */
+  .left {
+    width: 43.6%;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 64px;
+  }
+
+  .left-inner { max-width: 460px; display: flex; flex-direction: column; align-items: center; }
+
+  .headline {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.67rem, 2.61vw, 2.3rem);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+    color: var(--fg);
+    margin: 0;
+    order: 1;
+  }
+
+  .subtext {
+    font-family: var(--sans);
+    font-size: 0.79rem;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 342px;
+    margin: 36px auto 0;
+    order: 2;
+  }
+
+  .brand-logo {
+    display: block;
+    height: 22px;
+    width: auto;
+    margin: 88px auto 0;
+    opacity: 0.55;
+    order: 3;
+  }
+
+  /* ── Right: hero / placeholder panel ── */
+  .right {
+    width: 56.4%;
+    height: 100%;
+    background: #fff;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    overflow: hidden;
+  }
+
+  .hero-image {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    background: var(--placeholder-bg) url('file:///C:/Users/Bhavya%20Mittal/Downloads/pexels-jessef11-732548.jpg') center center / cover no-repeat;
+    z-index: 0;
+  }
+
+  /* Group: label + card, stacked and centered together */
+  .card-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    max-height: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .privacy-text {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    line-height: 1.6;
+    color: #fff;
+    text-align: center;
+    max-width: 288px;
+    margin: 0;
+    transition: opacity 0.25s ease;
+  }
+  .privacy-link {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .privacy-link:hover { color: #e4e4e4; }
+
+  /* ── Card ── */
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.05);
+    padding: 36px 36px 32px;
+    width: clamp(340px, 28vw, 440px);
+    max-width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+  }
+
+  .card-title {
+    font-family: var(--sans);
+    font-size: 1.01rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    margin: 0 0 6px;
+  }
+
+  .card-sub {
+    font-family: var(--sans);
+    font-size: 0.79rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #3a3a3a;
+    margin: 0;
+  }
+
+  .card-form { margin-top: 36px; }
+
+  .card-input {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 0.77rem;
+    color: var(--fg);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .card-input::placeholder { color: var(--muted2); }
+  .card-input:focus { border-color: #b8b4ad; }
+  .card-input.invalid { border-color: #c0392b; }
+  .card-input.invalid:focus { border-color: #c0392b; }
+
+  .field-error {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    color: #c0392b;
+    margin: 8px 0 0;
+  }
+
+  .card-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sans);
+    font-size: 0.77rem;
+    font-weight: 500;
+    color: #fff;
+    background: #111;
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .card-button:hover { background: #000; }
+  .card-button:active { transform: scale(0.98); }
+
+  #joinBtn { margin-top: 24px; width: 100%; }
+
+  /* ── Expanded form (step 2) ── */
+  .step-2 { opacity: 0; }
+  .field-row { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 16px; margin-bottom: 24px; }
+  .field-row .field { margin-bottom: 0; }
+  .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .field:last-of-type { margin-bottom: 0; }
+  .field-label { font-family: var(--sans); font-size: 0.77rem; font-weight: 600; color: var(--fg); }
+  .field-label .optional { font-weight: 400; color: var(--muted2); }
+
+  .multiselect { position: relative; }
+  .select-trigger {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    font-family: var(--sans); font-size: 0.77rem; color: var(--fg); text-align: left;
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px; cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .select-trigger:hover, .select-trigger.open { border-color: #b8b4ad; }
+  .select-trigger .placeholder { color: var(--muted2); }
+  .select-caret { flex-shrink: 0; color: var(--muted); transition: transform 0.15s ease; }
+  .select-trigger.open .select-caret { transform: rotate(180deg); }
+
+  .select-panel {
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 20;
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 6px; display: none; flex-direction: column; gap: 1px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    max-height: 190px; overflow-y: auto;
+  }
+  .select-panel.open { display: flex; }
+  .option-row {
+    display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 3px;
+    font-size: 0.75rem; color: var(--fg); cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .option-row:hover { background: #f5f4f2; }
+  .option-row.selected { background: #f0efec; font-weight: 600; }
+  .option-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--fg); cursor: pointer; flex-shrink: 0; }
+
+  .submit-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+
+  /* ── Success (step 3) ── */
+  .step-success { opacity: 0; }
+  .step-success .card-title { margin-bottom: 10px; }
+
+  [hidden] { display: none !important; }
+
+  @media (max-width: 900px) {
+    html, body { overflow: auto; height: auto; }
+    .page { flex-direction: column; height: auto; }
+    .left, .right { width: 100%; }
+    .left { padding: 80px 32px 60px; }
+    .right { min-height: 480px; padding: 40px 24px 140px; }
+    .hero-image { top: 0; right: 0; bottom: 0; left: 0; }
+    .field-row { grid-template-columns: 1fr; gap: 24px; }
+    .brand-logo { order: 0; margin: 0 auto 48px; }
+    .headline { order: 1; }
+    .subtext { order: 2; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="page">
+    <!-- ── Left: copy ── -->
+    <div class="left">
+      <div class="left-inner">
+        <h1 class="headline">Building an open<br>language for<br>interface motion.</h1>
+        <p class="subtext">Bloom explores how motion can become a shared foundation of design systems - helping teams define how interfaces move, respond, and transform through open principles, patterns, and tools.</p>
+        <img class="brand-logo" src="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/Bloomn_Full%20logo.svg" alt="Bloomn" />
+      </div>
+    </div>
+
+    <!-- ── Right: hero placeholder + card ── -->
+    <div class="right">
+      <div class="hero-image"></div>
+      <div class="card-wrap">
+
+        <div class="card" id="card">
+
+          <!-- Step 1: initial email capture -->
+          <div class="step step-1" id="step1">
+            <h2 class="card-title">Help shape Bloom.</h2>
+            <p class="card-sub">Join the early group exploring<br>the future of interface motion.</p>
+
+            <form class="card-form" id="step1Form">
+              <input class="card-input" id="emailStep1" type="email" placeholder="john.doe@email.com" />
+              <p class="field-error" id="emailError" hidden>Please enter a valid email address.</p>
+              <button type="submit" class="card-button" id="joinBtn">Join the build</button>
+            </form>
+          </div>
+
+          <!-- Step 2: expanded form -->
+          <div class="step step-2" id="step2" hidden>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label" for="nameInput">Name</label>
+                <input class="card-input" id="nameInput" type="text" placeholder="John Doe" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="emailInput">Email Address</label>
+                <input class="card-input" id="emailInput" type="email" placeholder="john.doe@email.com" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label" id="roleLabel">I am a</label>
+              <div class="multiselect" id="roleSelectWrap">
+                <button type="button" class="select-trigger" id="roleTrigger" onclick="toggleDropdown('rolePanel')" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="roleLabel">
+                  <span id="roleTriggerLabel" class="placeholder">Select your role</span>
+                  <svg class="select-caret" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="select-panel" id="rolePanel" role="listbox" aria-label="I am a">
+                  <div class="option-row" role="option" aria-selected="false" data-value="Product Designer" onclick="selectRole(this)">Product Designer</div>
+                  <div class="option-row" role="option" aria-selected="false" data-value="Design System Designer" onclick="selectRole(this)">Design System Designer</div>
+                  <div class="option-row" role="option" aria-selected="false" data-value="Motion Designer" onclick="selectRole(this)">Motion Designer</div>
+                  <div class="option-row" role="option" aria-selected="false" data-value="Frontend Engineer" onclick="selectRole(this)">Frontend Engineer</div>
+                  <div class="option-row" role="option" aria-selected="false" data-value="Founder / Product Builder" onclick="selectRole(this)">Founder / Product Builder</div>
+                  <div class="option-row" role="option" aria-selected="false" data-value="Student" onclick="selectRole(this)">Student</div>
+                  <div class="option-row" role="option" aria-selected="false" data-value="Other" onclick="selectRole(this)">Other</div>
+                </div>
+                <input type="hidden" id="roleValue" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label" id="interestLabel">I am interested in</label>
+              <div class="multiselect" id="interestSelect">
+                <button type="button" class="select-trigger" id="interestTrigger" onclick="toggleDropdown('interestPanel')" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="interestLabel">
+                  <span id="interestTriggerLabel" class="placeholder">Select all that apply</span>
+                  <svg class="select-caret" width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 3.5l3 3 3-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <div class="select-panel" id="interestPanel" role="group" aria-label="I am interested in">
+                  <label class="option-row"><input type="checkbox" value="Using the motion system" onchange="updateInterestLabel()" /><span>Using the motion system</span></label>
+                  <label class="option-row"><input type="checkbox" value="Contributing to the project" onchange="updateInterestLabel()" /><span>Contributing to the project</span></label>
+                  <label class="option-row"><input type="checkbox" value="Testing early releases" onchange="updateInterestLabel()" /><span>Testing early releases</span></label>
+                  <label class="option-row"><input type="checkbox" value="Learning about motion systems" onchange="updateInterestLabel()" /><span>Learning about motion systems</span></label>
+                  <label class="option-row"><input type="checkbox" value="Following the build" onchange="updateInterestLabel()" /><span>Following the build</span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="submit-row">
+              <button type="button" class="card-button" id="submitBtn">Join the build</button>
+            </div>
+          </div>
+
+          <!-- Step 3: success -->
+          <div class="step step-success" id="stepSuccess" hidden>
+            <h2 class="card-title">You're in.</h2>
+            <p class="card-sub">We'll share early experiments, releases, and opportunities to contribute as the system takes shape.</p>
+          </div>
+
+        </div>
+
+        <p class="privacy-text" id="privacyText">Your information helps us build Bloom. No spam, just updates and collaboration. <a href="#" class="privacy-link">View Privacy Policy</a></p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ── Card morph animation ──
+  function morphCard(hideEl, showEl, card, onDone) {
+    var startHeight = card.offsetHeight;
+    card.style.overflow = 'hidden';
+    card.style.height = startHeight + 'px';
+
+    hideEl.style.transition = 'opacity 0.18s ease';
+    hideEl.style.opacity = '0';
+
+    setTimeout(function () {
+      hideEl.hidden = true;
+      showEl.hidden = false;
+      showEl.style.opacity = '0';
+
+      // measure natural height of incoming content
+      card.style.height = 'auto';
+      var targetHeight = card.offsetHeight;
+      card.style.height = startHeight + 'px';
+      card.offsetHeight; // force reflow
+
+      card.style.transition = 'height 0.4s cubic-bezier(.4,0,.2,1)';
+
+      requestAnimationFrame(function () {
+        card.style.height = targetHeight + 'px';
+        showEl.style.transition = 'opacity 0.3s ease 0.1s';
+        showEl.style.opacity = '1';
+      });
+
+      card.addEventListener('transitionend', function handler(e) {
+        if (e.propertyName === 'height') {
+          card.style.height = 'auto';
+          card.style.overflow = 'visible';
+          card.style.transition = '';
+          card.removeEventListener('transitionend', handler);
+          if (onDone) onDone();
+        }
+      });
+    }, 180);
+  }
+
+  // ── Basic email format check ──
+  function isValidEmail(value) {
+    // simple, permissive check: something@something.tld
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+  }
+
+  document.getElementById('step1Form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var emailField = document.getElementById('emailStep1');
+    var errorEl = document.getElementById('emailError');
+    var email = emailField.value.trim();
+
+    if (!isValidEmail(email)) {
+      emailField.classList.add('invalid');
+      errorEl.hidden = false;
+      emailField.focus();
+      return;
+    }
+
+    emailField.classList.remove('invalid');
+    errorEl.hidden = true;
+    document.getElementById('emailInput').value = email;
+
+    var card = document.getElementById('card');
+    morphCard(document.getElementById('step1'), document.getElementById('step2'), card);
+  });
+
+  // clear the error as soon as the person starts fixing it
+  document.getElementById('emailStep1').addEventListener('input', function () {
+    this.classList.remove('invalid');
+    document.getElementById('emailError').hidden = true;
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', function () {
+    var card = document.getElementById('card');
+    morphCard(document.getElementById('step2'), document.getElementById('stepSuccess'), card, function () {
+      var privacyText = document.getElementById('privacyText');
+      privacyText.style.opacity = '0';
+      setTimeout(function () { privacyText.hidden = true; }, 250);
+    });
+  });
+
+  // ── Dropdown behaviour (role select native; interest custom) ──
+  function closeAllDropdowns() {
+    document.querySelectorAll('.select-panel.open').forEach(function (p) {
+      p.classList.remove('open');
+      var trigger = p.previousElementSibling;
+      trigger.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function toggleDropdown(panelId) {
+    var panel = document.getElementById(panelId);
+    var trigger = panel.previousElementSibling;
+    var isOpen = panel.classList.contains('open');
+    closeAllDropdowns();
+    if (!isOpen) {
+      panel.classList.add('open');
+      trigger.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.multiselect')) closeAllDropdowns();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAllDropdowns();
+  });
+
+  function selectRole(el) {
+    var value = el.getAttribute('data-value');
+    var label = document.getElementById('roleTriggerLabel');
+    label.textContent = value;
+    label.classList.remove('placeholder');
+
+    document.querySelectorAll('#rolePanel .option-row').forEach(function (o) {
+      o.classList.remove('selected');
+      o.setAttribute('aria-selected', 'false');
+    });
+    el.classList.add('selected');
+    el.setAttribute('aria-selected', 'true');
+
+    document.getElementById('roleValue').value = value;
+    closeAllDropdowns();
+  }
+
+  function updateInterestLabel() {
+    var checked = document.querySelectorAll('#interestPanel input[type="checkbox"]:checked');
+    var label = document.getElementById('interestTriggerLabel');
+    if (checked.length === 0) {
+      label.textContent = 'Select all that apply';
+      label.classList.add('placeholder');
+    } else if (checked.length === 1) {
+      label.textContent = checked[0].value;
+      label.classList.remove('placeholder');
+    } else {
+      label.textContent = checked.length + ' selected';
+      label.classList.remove('placeholder');
+    }
+  }
+</script>
+
+</body>
+</html>
