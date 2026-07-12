@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Bloom — Building an open language for interface motion</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/assets/Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400&display=swap" rel="stylesheet">
@@ -104,6 +105,7 @@
     bottom: 14px;
     left: 14px;
     background: var(--placeholder-bg) url('https://raw.githubusercontent.com/bhavyamittall/bloomn/main/assets/FieldBG_static.webp') center center / cover no-repeat;
+    border-radius: var(--radius);
     overflow: hidden;
     z-index: 0;
   }
@@ -136,6 +138,77 @@
   }
   .privacy-link:hover { color: #e4e4e4; }
 
+  /* ── Privacy Policy overlay ── */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.5);
+  }
+  .overlay-panel {
+    position: relative;
+    background: #fff;
+    border-radius: var(--radius);
+    width: min(560px, 100%);
+    max-height: min(640px, 85vh);
+    overflow-y: auto;
+    padding: 40px 40px 36px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+  }
+  .overlay-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .overlay-close:hover { background: #f5f4f2; color: var(--fg); }
+  .overlay-title {
+    font-family: var(--sans);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0 0 4px;
+  }
+  .overlay-updated {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    color: var(--muted2);
+    margin: 0 0 24px;
+  }
+  .overlay-body h3 {
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--fg);
+    margin: 20px 0 6px;
+  }
+  .overlay-body h3:first-child { margin-top: 0; }
+  .overlay-body p {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    line-height: 1.65;
+    color: #444;
+    margin: 0;
+  }
+
   /* ── Card ── */
   .card {
     background: #fff;
@@ -156,6 +229,8 @@
     color: var(--fg);
     margin: 0 0 6px;
   }
+
+  #mainCardTitle { font-weight: 600; }
 
   .card-sub {
     font-family: var(--sans);
@@ -264,7 +339,7 @@
     .page { flex-direction: column; height: auto; }
     .left, .right { width: 100%; }
     .left { padding: 80px 32px 60px; }
-    .right { min-height: 480px; padding: 40px 24px 140px; }
+    .right { min-height: 480px; padding: 24px 24px 140px; }
     .hero-image { top: 0; right: 0; bottom: 0; left: 0; }
     .field-row { grid-template-columns: 1fr; gap: 24px; }
     .brand-logo { order: 0; margin: 0 auto 48px; }
@@ -272,6 +347,7 @@
     .subtext { order: 2; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -294,7 +370,7 @@
 
           <!-- Step 1: initial email capture -->
           <div class="step step-1" id="step1">
-            <h2 class="card-title">Help shape Bloom.</h2>
+            <h2 class="card-title" id="mainCardTitle">Help shape Bloom.</h2>
             <p class="card-sub">Join the early group exploring<br>the future of interface motion.</p>
 
             <form class="card-form" id="step1Form">
@@ -354,6 +430,7 @@
               </div>
             </div>
 
+            <p class="field-error" id="submitError" hidden>Something went wrong — please try again.</p>
             <div class="submit-row">
               <button type="button" class="card-button" id="submitBtn">Join the build</button>
             </div>
@@ -361,18 +438,52 @@
 
           <!-- Step 3: success -->
           <div class="step step-success" id="stepSuccess" hidden>
-            <h2 class="card-title">You're in.</h2>
+            <h2 class="card-title" id="successTitle">You're in.</h2>
             <p class="card-sub">We'll share early experiments, releases, and opportunities to contribute as the system takes shape.</p>
           </div>
 
         </div>
 
-        <p class="privacy-text" id="privacyText">Your information helps us build Bloom. No spam, just updates and collaboration. <a href="#" class="privacy-link">View Privacy Policy</a></p>
+        <p class="privacy-text" id="privacyText">Your information helps us build Bloom. No spam, just updates and collaboration. <a href="#" class="privacy-link" id="privacyLinkTrigger">View Privacy Policy</a></p>
+      </div>
+    </div>
+
+    <!-- Privacy Policy overlay -->
+    <div class="overlay" id="privacyOverlay" hidden>
+      <div class="overlay-backdrop" id="privacyBackdrop"></div>
+      <div class="overlay-panel" role="dialog" aria-modal="true" aria-labelledby="privacyOverlayTitle">
+        <button type="button" class="overlay-close" id="privacyClose" aria-label="Close">&times;</button>
+        <h2 class="overlay-title" id="privacyOverlayTitle">Privacy Policy</h2>
+        <p class="overlay-updated">Last updated: July 2026</p>
+
+        <div class="overlay-body">
+          <h3>Information we collect</h3>
+          <p>When you join the Bloom waitlist, we collect the name and email address you provide, along with your selected role and areas of interest. We don't collect anything beyond what's in this form.</p>
+
+          <h3>How we use it</h3>
+          <p>We use this information to let you know about early releases, invite you to test features, and understand who's interested in Bloom so we can build it for the right people. We do not sell, rent, or trade your information to third parties.</p>
+
+          <h3>Data storage</h3>
+          <p>Your information is stored securely with our database provider and is only accessible to the Bloom team. You can ask us to update or delete your entry at any time.</p>
+
+          <h3>Your rights</h3>
+          <p>You can request a copy of your data, ask us to correct it, or have it removed entirely, whenever you'd like. Just get in touch and we'll take care of it.</p>
+
+          <h3>Contact</h3>
+          <p>Reach us at bhavya@bloomn.in</p>
+        </div>
       </div>
     </div>
   </div>
 
 <script>
+
+  // ── Supabase ──
+  var supabaseClient = supabase.createClient(
+    'https://tihdvoqirhrduihmskdc.supabase.co',
+    'sb_publishable_Ss5RccudhSwkJV4JRDI4eA_vQSzLi3A'
+  );
+
   // ── Card morph animation ──
   function morphCard(hideEl, showEl, card, onDone) {
     var startHeight = card.offsetHeight;
@@ -448,12 +559,55 @@
   });
 
   document.getElementById('submitBtn').addEventListener('click', function () {
-    var card = document.getElementById('card');
-    morphCard(document.getElementById('step2'), document.getElementById('stepSuccess'), card, function () {
-      var privacyText = document.getElementById('privacyText');
-      privacyText.style.opacity = '0';
-      setTimeout(function () { privacyText.hidden = true; }, 250);
-    });
+    var submitBtn = this;
+    var errorEl = document.getElementById('submitError');
+    var name = document.getElementById('nameInput').value.trim();
+    var email = document.getElementById('emailInput').value.trim();
+    var role = document.getElementById('roleValue').value;
+    var interests = Array.prototype.map.call(
+      document.querySelectorAll('#interestPanel input[type="checkbox"]:checked'),
+      function (el) { return el.value; }
+    );
+
+    if (!name || !email || !role || interests.length === 0) {
+      errorEl.textContent = 'Please fill in your name, email, role, and at least one interest.';
+      errorEl.hidden = false;
+      return;
+    }
+    if (!isValidEmail(email)) {
+      errorEl.textContent = 'Please enter a valid email address.';
+      errorEl.hidden = false;
+      return;
+    }
+
+    errorEl.hidden = true;
+    submitBtn.disabled = true;
+    var originalLabel = submitBtn.textContent;
+    submitBtn.textContent = 'Joining…';
+
+    supabaseClient
+      .from('waitlist_signups')
+      .upsert({ name: name, email: email, role: role, interests: interests }, { onConflict: 'email' })
+      .then(function (result) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+
+        if (result.error) {
+          errorEl.textContent = 'Something went wrong — please try again.';
+          errorEl.hidden = false;
+          return;
+        }
+
+        var firstName = name.split(' ')[0];
+        document.getElementById('successTitle').textContent = firstName + ', you\'re in!';
+
+        var card = document.getElementById('card');
+        morphCard(document.getElementById('step2'), document.getElementById('stepSuccess'), card, function () {
+          var privacyText = document.getElementById('privacyText');
+          privacyText.style.opacity = '0';
+          setTimeout(function () { privacyText.hidden = true; }, 250);
+        });
+      });
   });
 
   // ── Dropdown behaviour (role select native; interest custom) ──
@@ -516,6 +670,25 @@
       label.classList.remove('placeholder');
     }
   }
+
+  // ── Privacy Policy overlay ──
+  var privacyOverlay = document.getElementById('privacyOverlay');
+
+  function openPrivacyOverlay(e) {
+    if (e) e.preventDefault();
+    privacyOverlay.hidden = false;
+  }
+
+  function closePrivacyOverlay() {
+    privacyOverlay.hidden = true;
+  }
+
+  document.getElementById('privacyLinkTrigger').addEventListener('click', openPrivacyOverlay);
+  document.getElementById('privacyClose').addEventListener('click', closePrivacyOverlay);
+  document.getElementById('privacyBackdrop').addEventListener('click', closePrivacyOverlay);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !privacyOverlay.hidden) closePrivacyOverlay();
+  });
 </script>
 
 </body>
