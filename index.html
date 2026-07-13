@@ -347,7 +347,6 @@
     .subtext { order: 2; }
   }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -478,11 +477,22 @@
 
 <script>
 
-  // ── Supabase ──
-  var supabaseClient = supabase.createClient(
-    'https://tihdvoqirhrduihmskdc.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpaGR2b3FpcmhyZHVpaG1za2RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NDY1NDEsImV4cCI6MjA5OTQyMjU0MX0.JVRAV59M-QnAkL3mIysRIBqk5tawcUW9r_tF8xrxCME'
-  );
+  // ── Supabase (raw REST, no SDK — avoids CDN/SDK version issues) ──
+  var SUPABASE_URL = 'https://tihdvoqirhrduihmskdc.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpaGR2b3FpcmhyZHVpaG1za2RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NDY1NDEsImV4cCI6MjA5OTQyMjU0MX0.JVRAV59M-QnAkL3mIysRIBqk5tawcUW9r_tF8xrxCME';
+
+  function submitWaitlistEntry(entry) {
+    return fetch(SUPABASE_URL + '/rest/v1/waitlist_signups?on_conflict=email', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
+      body: JSON.stringify(entry)
+    });
+  }
 
   // ── Card morph animation ──
   function morphCard(hideEl, showEl, card, onDone) {
@@ -585,14 +595,15 @@
     var originalLabel = submitBtn.textContent;
     submitBtn.textContent = 'Joining…';
 
-    supabaseClient
-      .from('waitlist_signups')
-      .upsert({ name: name, email: email, role: role, interests: interests }, { onConflict: 'email' })
-      .then(function (result) {
+    submitWaitlistEntry({ name: name, email: email, role: role, interests: interests })
+      .then(function (response) {
         submitBtn.disabled = false;
         submitBtn.textContent = originalLabel;
 
-        if (result.error) {
+        if (!response.ok) {
+          response.text().then(function (body) {
+            console.error('Supabase insert failed:', response.status, body);
+          });
           errorEl.textContent = 'Something went wrong — please try again.';
           errorEl.hidden = false;
           return;
@@ -607,6 +618,12 @@
           privacyText.style.opacity = '0';
           setTimeout(function () { privacyText.hidden = true; }, 250);
         });
+      })
+      .catch(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        errorEl.textContent = 'Something went wrong — please check your connection and try again.';
+        errorEl.hidden = false;
       });
   });
 
