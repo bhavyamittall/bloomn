@@ -482,13 +482,15 @@
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpaGR2b3FpcmhyZHVpaG1za2RjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4NDY1NDEsImV4cCI6MjA5OTQyMjU0MX0.JVRAV59M-QnAkL3mIysRIBqk5tawcUW9r_tF8xrxCME';
 
   function submitWaitlistEntry(entry) {
-    return fetch(SUPABASE_URL + '/rest/v1/waitlist_signups?on_conflict=email', {
+    // Use an insert rather than an upsert. Public visitors may add their own
+    // signup, but must never be able to update an existing signup.
+    return fetch(SUPABASE_URL + '/rest/v1/waitlist_signups', {
       method: 'POST',
       headers: {
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
         'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
+        'Prefer': 'return=minimal'
       },
       body: JSON.stringify(entry)
     });
@@ -603,9 +605,11 @@
         if (!response.ok) {
           response.text().then(function (body) {
             console.error('Supabase insert failed:', response.status, body);
+            errorEl.textContent = response.status === 409
+              ? 'This email is already on the waitlist.'
+              : 'Something went wrong — please try again.';
+            errorEl.hidden = false;
           });
-          errorEl.textContent = 'Something went wrong — please try again.';
-          errorEl.hidden = false;
           return;
         }
 
