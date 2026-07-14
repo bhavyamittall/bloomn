@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bloom — Building an open language for interface motion</title>
+<title>Bloomn — Building an open language for interface motion</title>
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/assets/Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --fg: #171717;
+    --fg: #0D2618;
     --muted: #6b6b6b;
     --muted2: #9a9a9a;
     --border: #e4e2de;
@@ -151,7 +151,7 @@
   .overlay-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(20, 20, 20, 0.5);
+    background: rgba(13, 38, 24, 0.5);
   }
   .overlay-panel {
     position: relative;
@@ -161,7 +161,7 @@
     max-height: min(640px, 85vh);
     overflow-y: auto;
     padding: 40px 40px 36px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+    box-shadow: 0 24px 60px rgba(13,38,24,0.2);
   }
   .overlay-close {
     position: absolute;
@@ -205,7 +205,7 @@
     font-family: var(--sans);
     font-size: 0.8rem;
     line-height: 1.65;
-    color: #444;
+    color: #0D2618;
     margin: 0;
   }
 
@@ -213,7 +213,7 @@
   .card {
     background: #fff;
     border-radius: var(--radius);
-    box-shadow: 0 24px 60px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 24px 60px rgba(13,38,24,0.16), 0 2px 8px rgba(13,38,24,0.05);
     padding: 36px 36px 32px;
     width: clamp(340px, 28vw, 440px);
     max-width: 100%;
@@ -237,7 +237,7 @@
     font-size: 0.79rem;
     font-weight: 400;
     line-height: 1.5;
-    color: #3a3a3a;
+    color: #0D2618;
     margin: 0;
   }
 
@@ -275,14 +275,14 @@
     font-size: 0.77rem;
     font-weight: 500;
     color: #fff;
-    background: #111;
+    background: #0D2618;
     border: none;
     border-radius: var(--radius);
     padding: 14px 28px;
     cursor: pointer;
     transition: background 0.15s ease, transform 0.15s ease;
   }
-  .card-button:hover { background: #000; }
+  .card-button:hover { background: #0D2618; }
   .card-button:active { transform: scale(0.98); }
 
   #joinBtn { margin-top: 24px; width: 100%; }
@@ -313,7 +313,7 @@
     position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 20;
     background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
     padding: 6px; display: none; flex-direction: column; gap: 1px;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    box-shadow: 0 12px 28px rgba(13,38,24,0.12);
     max-height: 190px; overflow-y: auto;
   }
   .select-panel.open { display: flex; }
@@ -338,7 +338,7 @@
     html, body { overflow: auto; height: auto; }
     .page { flex-direction: column; height: auto; }
     .left, .right { width: 100%; }
-    .left { padding: 80px 32px 60px; }
+    .left { padding: 48px 32px 60px; }
     .right { min-height: 480px; padding: 24px 24px 140px; }
     .hero-image { top: 0; right: 0; bottom: 0; left: 0; }
     .field-row { grid-template-columns: 1fr; gap: 24px; }
@@ -355,7 +355,7 @@
     <div class="left">
       <div class="left-inner">
         <h1 class="headline">Building an open<br>language for<br>interface motion.</h1>
-        <p class="subtext">Bloom explores how motion can become a shared foundation of design systems - helping teams define how interfaces move, respond, and transform through open principles, patterns, and tools.</p>
+        <p class="subtext">Bloomn explores how motion can become a shared foundation of design systems - helping teams define how interfaces move, respond, and transform through open principles, patterns, and tools.</p>
         <img class="brand-logo" src="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/Bloomn_Full%20logo.svg" alt="Bloomn" />
       </div>
     </div>
@@ -369,7 +369,7 @@
 
           <!-- Step 1: initial email capture -->
           <div class="step step-1" id="step1">
-            <h2 class="card-title" id="mainCardTitle">Help shape Bloom.</h2>
+            <h2 class="card-title" id="mainCardTitle">Help shape Bloomn.</h2>
             <p class="card-sub">Join the early group exploring<br>the future of interface motion.</p>
 
             <form class="card-form" id="step1Form">
@@ -401,6 +401,7 @@
                 </button>
                 <div class="select-panel" id="rolePanel" role="listbox" aria-label="I am a">
                   <div class="option-row" role="option" aria-selected="false" data-value="Product Designer" onclick="selectRole(this)">Product Designer</div>
+                  <div class="option-row" role="option" aria-selected="false" data-value="Visual Designer" onclick="selectRole(this)">Visual Designer</div>
                   <div class="option-row" role="option" aria-selected="false" data-value="Design System Designer" onclick="selectRole(this)">Design System Designer</div>
                   <div class="option-row" role="option" aria-selected="false" data-value="Motion Designer" onclick="selectRole(this)">Motion Designer</div>
                   <div class="option-row" role="option" aria-selected="false" data-value="Frontend Engineer" onclick="selectRole(this)">Frontend Engineer</div>
@@ -443,7 +444,7 @@
 
         </div>
 
-        <p class="privacy-text" id="privacyText">Your information helps us build Bloom. No spam, just updates and collaboration. <a href="#" class="privacy-link" id="privacyLinkTrigger">View Privacy Policy</a></p>
+        <p class="privacy-text" id="privacyText">Your information helps us build Bloomn. No spam, just updates and collaboration. <a href="#" class="privacy-link" id="privacyLinkTrigger">View Privacy Policy</a></p>
       </div>
     </div>
 
@@ -457,13 +458,13 @@
 
         <div class="overlay-body">
           <h3>Information we collect</h3>
-          <p>When you join the Bloom waitlist, we collect the name and email address you provide, along with your selected role and areas of interest. We don't collect anything beyond what's in this form.</p>
+          <p>When you join the Bloomn waitlist, we collect the name and email address you provide, along with your selected role and areas of interest. We don't collect anything beyond what's in this form.</p>
 
           <h3>How we use it</h3>
-          <p>We use this information to let you know about early releases, invite you to test features, and understand who's interested in Bloom so we can build it for the right people. We do not sell, rent, or trade your information to third parties.</p>
+          <p>We use this information to let you know about early releases, invite you to test features, and understand who's interested in Bloomn so we can build it for the right people. We do not sell, rent, or trade your information to third parties.</p>
 
           <h3>Data storage</h3>
-          <p>Your information is stored securely with our database provider and is only accessible to the Bloom team. You can ask us to update or delete your entry at any time.</p>
+          <p>Your information is stored securely with our database provider and is only accessible to the Bloomn team. You can ask us to update or delete your entry at any time.</p>
 
           <h3>Your rights</h3>
           <p>You can request a copy of your data, ask us to correct it, or have it removed entirely, whenever you'd like. Just get in touch and we'll take care of it.</p>
