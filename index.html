@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/assets/Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400..900&display=swap" rel="stylesheet">
 <style>
   :root {
     --fg: #0D2618;
@@ -69,6 +69,19 @@
     margin: 0;
     order: 1;
     text-wrap: balance;
+  }
+
+  /* Per-letter cursor-proximity weight morph (headline only) */
+  .vf-word { display: inline-block; white-space: nowrap; }
+  .vf-letter { display: inline-block; font-variation-settings: 'wght' 400; }
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .subtext {
@@ -171,7 +184,9 @@
     text-decoration: underline;
     text-underline-offset: 2px;
   }
-  .privacy-link:hover { color: #e4e4e4; }
+  @media (hover: hover) and (pointer: fine) {
+    .privacy-link:hover { color: #e4e4e4; }
+  }
 
   /* ── Privacy Policy overlay ── */
   .overlay {
@@ -226,7 +241,9 @@
     border-radius: var(--radius);
     transition: background-color 0.15s ease, color 0.15s ease;
   }
-  .overlay-close:hover { background: #f5f4f2; color: var(--fg); }
+  @media (hover: hover) and (pointer: fine) {
+    .overlay-close:hover { background: #f5f4f2; color: var(--fg); }
+  }
   .overlay-title {
     font-family: var(--sans);
     font-size: 1.1rem;
@@ -283,6 +300,30 @@
 
   #mainCardTitle { font-weight: 600; }
 
+  /* Shiny sweep effect on the "Help shape Bloomn." heading */
+  #mainCardTitle { position: relative; display: inline-block; }
+  .shiny-base { color: var(--fg); }
+  .shiny-shine {
+    position: absolute;
+    inset: 0;
+    color: #969696;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right, transparent 30%, #000 50%, transparent 70%);
+    mask-image: linear-gradient(to right, transparent 30%, #000 50%, transparent 70%);
+    -webkit-mask-size: 150% auto;
+    mask-size: 150% auto;
+    animation: shinyPillSweep 2.2s ease-in-out infinite;
+  }
+  @keyframes shinyPillSweep {
+    0% { -webkit-mask-position: 200%; mask-position: 200%; }
+    100% { -webkit-mask-position: -100%; mask-position: -100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shiny-shine { animation: none; opacity: 0; }
+  }
+
+  .drawer-logo { display: none; }
+
   .card-sub {
     font-family: var(--sans);
     font-size: 0.79rem;
@@ -293,7 +334,7 @@
     text-wrap: pretty;
   }
 
-  .card-form { margin-top: 36px; }
+  .card-form { margin-top: 44px; }
 
   .card-input {
     width: 100%;
@@ -339,10 +380,34 @@
     transition-duration: 0.15s;
     transition-timing-function: ease;
   }
-  .card-button:hover { background: #0D2618; }
+  @media (hover: hover) and (pointer: fine) {
+    .card-button:hover { background: #0D2618; }
+  }
   .card-button:active { scale: 0.96; }
 
-  #joinBtn { margin-top: 24px; width: 100%; }
+  #joinBtn {
+    margin-top: 12px;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    background-origin: border-box;
+    box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    #joinBtn:hover {
+      box-shadow: 0px 3px 8px rgba(13, 38, 24, 0.22), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+  }
+  #joinBtn:focus {
+    box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+    outline: 0;
+  }
 
   /* ── Expanded form (step 2) ── */
   .step-2 { opacity: 0; }
@@ -362,7 +427,10 @@
     min-height: 44px;
     transition: border-color 0.15s ease;
   }
-  .select-trigger:hover, .select-trigger.open { border-color: #b8b4ad; }
+  .select-trigger.open { border-color: #b8b4ad; }
+  @media (hover: hover) and (pointer: fine) {
+    .select-trigger:hover { border-color: #b8b4ad; }
+  }
   .select-trigger .placeholder { color: var(--muted2); }
   .select-caret { flex-shrink: 0; color: var(--muted); transition: transform 0.15s ease; }
   .select-trigger.open .select-caret { transform: rotate(180deg); }
@@ -395,7 +463,9 @@
     font-size: 0.75rem; color: var(--fg); cursor: pointer;
     transition: background-color 0.15s ease;
   }
-  .option-row:hover { background: #f5f4f2; }
+  @media (hover: hover) and (pointer: fine) {
+    .option-row:hover { background: #f5f4f2; }
+  }
   .option-row.selected { background: #f0efec; font-weight: 600; }
   .option-row input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--fg); cursor: pointer; flex-shrink: 0; }
 
@@ -407,18 +477,76 @@
 
   [hidden] { display: none !important; }
 
+  .drawer-backdrop { display: none; }
+
   @media (max-width: 900px) {
     html, body { overflow: auto; height: auto; }
     .page { flex-direction: column; height: auto; }
     .left, .right { width: 100%; }
-    .left { padding: 48px 32px 60px; }
-    .right { min-height: 480px; padding: 24px 24px 140px; }
-    .hero-image { top: 0; right: 0; bottom: 0; left: 0; }
-    .field-row { grid-template-columns: 1fr; gap: 24px; }
-    .brand-logo { order: 0; margin: 0 auto 48px; }
+
+    /* Hero becomes a fixed-height top banner; the card detaches into a bottom drawer */
+    .right {
+      order: -1;
+      height: 65px;
+      min-height: 65px;
+      padding: 0;
+      overflow: hidden;
+      display: block;
+    }
+    .hero-image { top: 0; right: 0; bottom: 0; left: 0; border-radius: 0; outline: none; }
+
+    .left { padding: 34px 32px 280px; }
+    .left .brand-logo:not(.drawer-logo) { display: none; }
     .headline { order: 1; }
-    .subtext { order: 2; }
+    .subtext { order: 2; margin-top: 20px; max-width: 308px; }
+
+    .field-row { grid-template-columns: 1fr; gap: 24px; }
     .option-row { min-height: 44px; }
+
+    /* ── Bottom drawer ── */
+    .card-wrap {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      gap: 0;
+      max-height: none;
+      z-index: 40;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 10px 10px 0 0;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+      padding: 28px 24px calc(24px + env(safe-area-inset-bottom, 0px));
+      max-height: 74vh;
+      overflow-y: auto;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card.drawer-expanded { max-height: 88vh; }
+
+    #step1 { text-align: center; }
+    .drawer-logo { display: block; height: 17.6px; width: auto; margin: 0 auto 14px; opacity: 0.55; text-align: center; }
+    .step-1 .card-title { margin-top: 0; }
+
+    .privacy-text {
+      color: var(--muted);
+      padding: 12px 24px 0;
+      margin: 0;
+    }
+    .privacy-link { color: var(--fg); }
+
+    .drawer-backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: transparent;
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .drawer-backdrop.is-visible { opacity: 1; pointer-events: auto; }
   }
 
   @media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
@@ -443,7 +571,7 @@
     <!-- ── Left: copy ── -->
     <div class="left">
       <div class="left-inner">
-        <h1 class="headline">Building an open<br>language for<br>interface motion.</h1>
+        <h1 class="headline" id="mainHeadline"><span class="sr-only">Building an open language for interface motion.</span><span class="vf-line" aria-hidden="true">Building an open</span><br><span class="vf-line" aria-hidden="true">language for</span><br><span class="vf-line" aria-hidden="true">interface motion.</span></h1>
         <p class="subtext">Bloomn explores how motion can become a shared foundation of design systems - helping teams define how interfaces move, respond, and transform through open principles, patterns, and tools.</p>
         <img class="brand-logo" src="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/Bloomn_Full%20logo.svg" alt="Bloomn" />
       </div>
@@ -458,7 +586,8 @@
 
           <!-- Step 1: initial email capture -->
           <div class="step step-1" id="step1">
-            <h2 class="card-title" id="mainCardTitle">Help shape Bloomn.</h2>
+            <img class="brand-logo drawer-logo" src="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/Bloomn_Full%20logo.svg" alt="Bloomn" />
+            <h2 class="card-title" id="mainCardTitle"><span class="shiny-base">Help shape Bloomn.</span><span class="shiny-shine" aria-hidden="true">Help shape Bloomn.</span></h2>
             <p class="card-sub">Join the early group exploring<br>the future of interface motion.</p>
 
             <form class="card-form" id="step1Form">
@@ -535,6 +664,9 @@
 
         <p class="privacy-text" id="privacyText">Your information helps us build Bloomn. No spam, just updates and collaboration. <a href="#" class="privacy-link" id="privacyLinkTrigger">View Privacy Policy</a></p>
       </div>
+
+      <!-- Backdrop shown behind the drawer on mobile once it expands -->
+      <div class="drawer-backdrop" id="drawerBackdrop"></div>
     </div>
 
     <!-- Privacy Policy overlay -->
@@ -587,6 +719,11 @@
   }
 
   // ── Card morph animation ──
+  function triggerHaptic(pattern) {
+    if (typeof navigator === 'undefined' || typeof navigator.vibrate !== 'function') return;
+    try { navigator.vibrate(pattern); } catch (err) { /* no-op — unsupported/blocked */ }
+  }
+
   function morphCard(hideEl, showEl, card, onDone) {
     var startHeight = card.offsetHeight;
     card.style.overflow = 'hidden';
@@ -635,6 +772,11 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
   }
 
+  // On mobile, the privacy text is hidden on the initial (step 1) screen only
+  var privacyText = document.getElementById('privacyText');
+  var isMobileLayout = window.matchMedia('(max-width: 900px)');
+  if (isMobileLayout.matches) privacyText.hidden = true;
+
   document.getElementById('step1Form').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -653,8 +795,28 @@
     errorEl.hidden = true;
     document.getElementById('emailInput').value = email;
 
+    triggerHaptic(12);
+
     var card = document.getElementById('card');
+    card.classList.add('drawer-expanded');
+    document.getElementById('drawerBackdrop').classList.add('is-visible');
+    if (isMobileLayout.matches) privacyText.hidden = false;
     morphCard(document.getElementById('step1'), document.getElementById('step2'), card);
+  });
+
+  // Tapping the backdrop collapses the drawer back to step 1 (mobile only —
+  // the backdrop is invisible/unclickable above the 900px breakpoint)
+  document.getElementById('drawerBackdrop').addEventListener('click', function () {
+    var step2 = document.getElementById('step2');
+    if (step2.hidden) return; // don't collapse once submitted (success state)
+
+    var card = document.getElementById('card');
+    var backdrop = this;
+    backdrop.classList.remove('is-visible');
+    morphCard(step2, document.getElementById('step1'), card, function () {
+      card.classList.remove('drawer-expanded');
+      if (isMobileLayout.matches) privacyText.hidden = true;
+    });
   });
 
   // clear the error as soon as the person starts fixing it
@@ -686,6 +848,7 @@
     }
 
     errorEl.hidden = true;
+    triggerHaptic(12);
     submitBtn.disabled = true;
     var originalLabel = submitBtn.textContent;
     submitBtn.textContent = 'Joining…';
@@ -708,6 +871,8 @@
 
         var firstName = name.split(' ')[0];
         document.getElementById('successTitle').textContent = firstName + ', you\'re in!';
+
+        triggerHaptic([15, 60, 20]);
 
         var card = document.getElementById('card');
         morphCard(document.getElementById('step2'), document.getElementById('stepSuccess'), card, function () {
@@ -814,6 +979,100 @@
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !privacyOverlay.hidden) closePrivacyOverlay();
   });
+
+  // ── Headline: per-letter cursor-proximity weight morph ──
+  // Ported from a Framer/React "VariableFontCursorProximity" component to
+  // plain JS. Each letter's font-variation-settings 'wght' axis eases
+  // toward `toWeight` as the cursor nears it, and back to `fromWeight` as
+  // it leaves — driven by a rAF loop, not React state, so it never
+  // triggers a re-render.
+  (function initHeadlineProximity() {
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    var container = document.getElementById('mainHeadline');
+    if (!container) return;
+
+    var FROM_WEIGHT = 400;
+    var TO_WEIGHT = 650;
+    var STRENGTH = 30;         // 1–100, mirrors the Framer control
+    var MAX_REACH = 500;       // px, reach at strength = 100
+    var DURATION = 0.3;        // seconds, ramp speed (tau)
+
+    var reach = Math.max(1, (Math.max(1, Math.min(100, STRENGTH)) / 100) * MAX_REACH);
+
+    // Split each line's text into word spans (nowrap) of letter spans,
+    // collecting the letters into a flat array for the rAF loop.
+    var letterEls = [];
+    var lines = container.querySelectorAll('.vf-line');
+    lines.forEach(function (line) {
+      var text = line.textContent;
+      line.textContent = '';
+      var words = text.split(' ');
+      words.forEach(function (word, wi) {
+        var wordEl = document.createElement('span');
+        wordEl.className = 'vf-word';
+        for (var i = 0; i < word.length; i++) {
+          var letterEl = document.createElement('span');
+          letterEl.className = 'vf-letter';
+          letterEl.textContent = word[i];
+          wordEl.appendChild(letterEl);
+          letterEls.push(letterEl);
+        }
+        line.appendChild(wordEl);
+        if (wi < words.length - 1) line.appendChild(document.createTextNode('\u00A0'));
+      });
+    });
+
+    var letterFactors = new Array(letterEls.length).fill(0);
+    var mouseX = -99999, mouseY = -99999;
+    var lastFrame = 0;
+    var rafId = null;
+
+    function updatePosition(clientX, clientY) {
+      var rect = container.getBoundingClientRect();
+      mouseX = clientX - rect.left;
+      mouseY = clientY - rect.top;
+    }
+
+    window.addEventListener('mousemove', function (e) { updatePosition(e.clientX, e.clientY); });
+    window.addEventListener('touchmove', function (e) {
+      if (e.touches.length === 0) return;
+      updatePosition(e.touches[0].clientX, e.touches[0].clientY);
+    });
+
+    function frame(now) {
+      var containerRect = container.getBoundingClientRect();
+      var prevT = lastFrame || now;
+      var dtSec = Math.min(0.1, Math.max(0, (now - prevT) / 1000));
+      lastFrame = now;
+
+      var tau = Math.max(0.016, DURATION);
+      var a = 1 - Math.exp(-dtSec / tau);
+
+      for (var i = 0; i < letterEls.length; i++) {
+        var letterEl = letterEls[i];
+        var rect = letterEl.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2 - containerRect.left;
+        var cy = rect.top + rect.height / 2 - containerRect.top;
+        var dx = mouseX - cx;
+        var dy = mouseY - cy;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+
+        var target = Math.min(Math.max(1 - dist / reach, 0), 1);
+        var prev = letterFactors[i];
+        var f = prev + (target - prev) * a;
+        letterFactors[i] = f;
+
+        var w = Math.round(FROM_WEIGHT + (TO_WEIGHT - FROM_WEIGHT) * f);
+        letterEl.style.fontVariationSettings = "'wght' " + w;
+      }
+
+      rafId = requestAnimationFrame(frame);
+    }
+
+    rafId = requestAnimationFrame(frame);
+  })();
 </script>
 
 </body>
