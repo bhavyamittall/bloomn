@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bloomn — Building an open language for interface motion</title>
+<title>Bloomn Waitlist</title>
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/assets/Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -322,8 +322,6 @@
     .shiny-shine { animation: none; opacity: 0; }
   }
 
-  .drawer-logo { display: none; }
-
   .card-sub {
     font-family: var(--sans);
     font-size: 0.79rem;
@@ -366,6 +364,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     font-family: var(--sans);
     font-size: 0.77rem;
     font-weight: 500;
@@ -380,16 +379,29 @@
     transition-duration: 0.15s;
     transition-timing-function: ease;
   }
+  .btn-arrow { flex-shrink: 0; transition: transform 0.15s ease; }
+  @media (hover: hover) and (pointer: fine) {
+    .card-button:hover .btn-arrow { transform: translateX(4px); }
+  }
+  .card-button-secondary {
+    background: #fff;
+    color: var(--fg);
+    border: 1px solid var(--border);
+    margin-top: 16px;
+    width: 100%;
+  }
   @media (hover: hover) and (pointer: fine) {
     .card-button:hover { background: #0D2618; }
+    .card-button-secondary:hover { background: #f5f4f2; }
   }
   .card-button:active { scale: 0.96; }
 
   #joinBtn {
     margin-top: 12px;
     width: 100%;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    gap: 8px;
     font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
     background-origin: border-box;
     box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
@@ -477,76 +489,52 @@
 
   [hidden] { display: none !important; }
 
-  .drawer-backdrop { display: none; }
-
   @media (max-width: 900px) {
-    html, body { overflow: auto; height: auto; }
-    .page { flex-direction: column; height: auto; }
+    .page { flex-direction: column; height: 100dvh; overflow: hidden; }
     .left, .right { width: 100%; }
 
-    /* Hero becomes a fixed-height top banner; the card detaches into a bottom drawer */
-    .right {
-      order: -1;
-      height: 65px;
-      min-height: 65px;
-      padding: 0;
-      overflow: hidden;
-      display: block;
-    }
-    .hero-image { top: 0; right: 0; bottom: 0; left: 0; border-radius: 0; outline: none; }
-
-    .left { padding: 34px 32px 280px; }
-    .left .brand-logo:not(.drawer-logo) { display: none; }
-    .headline { order: 1; }
+    .left { padding: 28px 32px 40px; height: 42dvh; overflow: hidden; }
+    .brand-logo { order: 0; margin: 22px auto 22px; height: 17.6px; }
+    .headline { order: 1; font-size: clamp(1.5rem, 2.4vw, 2.05rem); }
     .subtext { order: 2; margin-top: 20px; max-width: 308px; }
 
     .field-row { grid-template-columns: 1fr; gap: 24px; }
     .option-row { min-height: 44px; }
 
-    /* ── Bottom drawer ── */
-    .card-wrap {
+    /* Hero + card become a fixed overlay pinned to the bottom of the viewport */
+    .right {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
-      gap: 0;
-      max-height: none;
-      z-index: 40;
+      height: 58dvh;
+      min-height: unset;
+      padding: 24px 24px 48px;
+      align-items: flex-start;
+      z-index: 2;
+      transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    .right.is-expanded {
+      height: 100dvh;
+      overflow-y: auto;
+    }
+    .hero-image { top: 14px; right: 14px; bottom: 14px; left: 14px; }
 
+    .card-wrap { width: 100%; }
     .card {
       width: 100%;
       max-width: 100%;
-      border-radius: 10px 10px 0 0;
-      box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-      padding: 28px 24px calc(24px + env(safe-area-inset-bottom, 0px));
-      max-height: 74vh;
-      overflow-y: auto;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: var(--radius);
+      box-shadow: none;
+      padding: 24px 24px;
     }
-    .card.drawer-expanded { max-height: 88vh; }
+    .card-input { padding: 12px 14px; }
 
-    #step1 { text-align: center; }
-    .drawer-logo { display: block; height: 17.6px; width: auto; margin: 0 auto 14px; opacity: 0.55; text-align: center; }
-    .step-1 .card-title { margin-top: 0; }
+    .step-1 .card-title { margin-top: 8px; margin-bottom: 4px; }
+    .step-1 .card-form { margin-top: 32px; }
+    .step-1 #joinBtn { margin-top: 8px; }
 
-    .privacy-text {
-      color: var(--muted);
-      padding: 12px 24px 0;
-      margin: 0;
-    }
-    .privacy-link { color: var(--fg); }
-
-    .drawer-backdrop {
-      display: block;
-      position: fixed;
-      inset: 0;
-      background: transparent;
-      z-index: 30;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .drawer-backdrop.is-visible { opacity: 1; pointer-events: auto; }
+    #step1, #stepSuccess { text-align: center; }
   }
 
   @media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
@@ -578,7 +566,7 @@
     </div>
 
     <!-- ── Right: hero placeholder + card ── -->
-    <div class="right">
+    <div class="right" id="rightPanel">
       <div class="hero-image"></div>
       <div class="card-wrap">
 
@@ -586,14 +574,13 @@
 
           <!-- Step 1: initial email capture -->
           <div class="step step-1" id="step1">
-            <img class="brand-logo drawer-logo" src="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/Bloomn_Full%20logo.svg" alt="Bloomn" />
             <h2 class="card-title" id="mainCardTitle"><span class="shiny-base">Help shape Bloomn.</span><span class="shiny-shine" aria-hidden="true">Help shape Bloomn.</span></h2>
             <p class="card-sub">Join the early group exploring<br>the future of interface motion.</p>
 
             <form class="card-form" id="step1Form">
               <input class="card-input" id="emailStep1" type="email" placeholder="john.doe@email.com" />
               <p class="field-error" id="emailError" hidden>Please enter a valid email address.</p>
-              <button type="submit" class="card-button" id="joinBtn">Join the build</button>
+              <button type="submit" class="card-button" id="joinBtn">Join the build<svg class="btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
             </form>
           </div>
 
@@ -650,7 +637,7 @@
 
             <p class="field-error" id="submitError" hidden>Something went wrong — please try again.</p>
             <div class="submit-row">
-              <button type="button" class="card-button" id="submitBtn">Join the build</button>
+              <button type="button" class="card-button" id="submitBtn"><span class="btn-label">Join the build</span><svg class="btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></button>
             </div>
           </div>
 
@@ -658,15 +645,13 @@
           <div class="step step-success" id="stepSuccess" hidden>
             <h2 class="card-title" id="successTitle">You're in.</h2>
             <p class="card-sub">We'll share early experiments, releases, and opportunities to contribute as the system takes shape.</p>
+            <button type="button" class="card-button card-button-secondary" id="shareBtn">Share Bloomn</button>
           </div>
 
         </div>
 
         <p class="privacy-text" id="privacyText">Your information helps us build Bloomn. No spam, just updates and collaboration. <a href="#" class="privacy-link" id="privacyLinkTrigger">View Privacy Policy</a></p>
       </div>
-
-      <!-- Backdrop shown behind the drawer on mobile once it expands -->
-      <div class="drawer-backdrop" id="drawerBackdrop"></div>
     </div>
 
     <!-- Privacy Policy overlay -->
@@ -772,11 +757,6 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
   }
 
-  // On mobile, the privacy text is hidden on the initial (step 1) screen only
-  var privacyText = document.getElementById('privacyText');
-  var isMobileLayout = window.matchMedia('(max-width: 900px)');
-  if (isMobileLayout.matches) privacyText.hidden = true;
-
   document.getElementById('step1Form').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -797,26 +777,10 @@
 
     triggerHaptic(12);
 
+    document.getElementById('rightPanel').classList.add('is-expanded');
+
     var card = document.getElementById('card');
-    card.classList.add('drawer-expanded');
-    document.getElementById('drawerBackdrop').classList.add('is-visible');
-    if (isMobileLayout.matches) privacyText.hidden = false;
     morphCard(document.getElementById('step1'), document.getElementById('step2'), card);
-  });
-
-  // Tapping the backdrop collapses the drawer back to step 1 (mobile only —
-  // the backdrop is invisible/unclickable above the 900px breakpoint)
-  document.getElementById('drawerBackdrop').addEventListener('click', function () {
-    var step2 = document.getElementById('step2');
-    if (step2.hidden) return; // don't collapse once submitted (success state)
-
-    var card = document.getElementById('card');
-    var backdrop = this;
-    backdrop.classList.remove('is-visible');
-    morphCard(step2, document.getElementById('step1'), card, function () {
-      card.classList.remove('drawer-expanded');
-      if (isMobileLayout.matches) privacyText.hidden = true;
-    });
   });
 
   // clear the error as soon as the person starts fixing it
@@ -850,13 +814,14 @@
     errorEl.hidden = true;
     triggerHaptic(12);
     submitBtn.disabled = true;
-    var originalLabel = submitBtn.textContent;
-    submitBtn.textContent = 'Joining…';
+    var submitLabel = submitBtn.querySelector('.btn-label');
+    var originalLabel = submitLabel.textContent;
+    submitLabel.textContent = 'Joining…';
 
     submitWaitlistEntry({ name: name, email: email, role: role, interests: interests })
       .then(function (response) {
         submitBtn.disabled = false;
-        submitBtn.textContent = originalLabel;
+        submitLabel.textContent = originalLabel;
 
         if (!response.ok) {
           response.text().then(function (body) {
@@ -874,6 +839,8 @@
 
         triggerHaptic([15, 60, 20]);
 
+        document.getElementById('rightPanel').classList.remove('is-expanded');
+
         var card = document.getElementById('card');
         morphCard(document.getElementById('step2'), document.getElementById('stepSuccess'), card, function () {
           var privacyText = document.getElementById('privacyText');
@@ -883,7 +850,7 @@
       })
       .catch(function () {
         submitBtn.disabled = false;
-        submitBtn.textContent = originalLabel;
+        submitLabel.textContent = originalLabel;
         errorEl.textContent = 'Something went wrong — please check your connection and try again.';
         errorEl.hidden = false;
       });
@@ -978,6 +945,20 @@
   document.getElementById('privacyBackdrop').addEventListener('click', closePrivacyOverlay);
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !privacyOverlay.hidden) closePrivacyOverlay();
+  });
+
+  // ── Share button (success step) ──
+  document.getElementById('shareBtn').addEventListener('click', function () {
+    var shareBtn = this;
+    triggerHaptic(12);
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(window.location.href).then(function () {
+        var originalLabel = shareBtn.textContent;
+        shareBtn.textContent = 'Copied';
+        setTimeout(function () { shareBtn.textContent = originalLabel; }, 1800);
+      }).catch(function () { /* clipboard blocked — silently ignore */ });
+    }
   });
 
   // ── Headline: per-letter cursor-proximity weight morph ──
