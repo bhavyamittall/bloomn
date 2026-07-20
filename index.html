@@ -496,7 +496,8 @@
     .left { padding: 28px 32px 40px; height: 42dvh; overflow: hidden; }
     .brand-logo { order: 0; margin: 22px auto 22px; height: 17.6px; }
     .headline { order: 1; font-size: clamp(1.5rem, 2.4vw, 2.05rem); }
-    .subtext { order: 2; margin-top: 20px; max-width: 308px; }
+    .subtext { order: 2; margin-top: 20px; max-width: 308px; font-size: 0.72rem; }
+    .subtext .nowrap-phrase { white-space: nowrap; }
 
     .field-row { grid-template-columns: 1fr; gap: 24px; }
     .option-row { min-height: 44px; }
@@ -560,7 +561,7 @@
     <div class="left">
       <div class="left-inner">
         <h1 class="headline" id="mainHeadline"><span class="sr-only">Building an open language for interface motion.</span><span class="vf-line" aria-hidden="true">Building an open</span><br><span class="vf-line" aria-hidden="true">language for</span><br><span class="vf-line" aria-hidden="true">interface motion.</span></h1>
-        <p class="subtext">Bloomn explores how motion can become a shared foundation of design systems - helping teams define how interfaces move, respond, and transform through open principles, patterns, and tools.</p>
+        <p class="subtext">Bloomn explores how motion can become a shared foundation of design systems - helping teams define how interfaces move, respond, and transform through open principles, <span class="nowrap-phrase">patterns, and tools.</span></p>
         <img class="brand-logo" src="https://raw.githubusercontent.com/bhavyamittall/bloomn/main/Bloomn_Full%20logo.svg" alt="Bloomn" />
       </div>
     </div>
